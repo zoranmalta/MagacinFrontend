@@ -1,0 +1,60 @@
+<div class="mat-elevation-z8">
+    <h4 style="text-align: center;">Lista Artikala od 00000 do 99999</h4>
+    <div class="row">
+      <div class="col-3" >
+        <mat-form-field style="margin-left: 0.8em;">
+          <mat-label>Pretraga</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+        </mat-form-field>
+      </div>
+      <div class="col-2" >
+        <button type="button" mat-raised-button (click)="onAddRoba()">Dodaj Artikal</button>
+      </div>
+      <div class="col-1" >
+        <button type="button" mat-raised-button (click)="onReport()">Rep.</button>
+      </div>
+      <div class="col-6" style="float: right;"> 
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+      </div>
+      
+    </div>
+  
+    <table mat-table [dataSource]="dataSource" matSort >
+  
+      <!-- Sifra Column -->
+      <ng-container matColumnDef="sifra">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Sifra </mat-header-cell>
+        <mat-cell *matCellDef="let roba"> {{roba.sifra}} </mat-cell>
+      </ng-container>
+
+       <!-- Grupa Column -->
+       <ng-container matColumnDef="grupaRoba">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Grupa Artikala </mat-header-cell>
+        <mat-cell *matCellDef="let roba"> {{roba.grupaRoba.naziv}} </mat-cell>
+      </ng-container>
+  
+      <!-- Pakovanje Column -->
+      <ng-container matColumnDef="pakovanje">
+        <mat-header-cell *matHeaderCellDef> Pak </mat-header-cell>
+        <mat-cell *matCellDef="let roba"> {{roba.pakovanje}} </mat-cell>
+      </ng-container>
+  
+      <!-- Jed. mere Column -->
+      <ng-container matColumnDef="jedinicaMere">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Jed. mere </mat-header-cell>
+        <mat-cell *matCellDef="let roba "> {{roba.jedinicaMere.naziv}} </mat-cell>
+      </ng-container>
+  
+      <!-- Naziv Column -->
+      <ng-container matColumnDef="naziv">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Naziv Artikla </mat-header-cell>
+        <mat-cell *matCellDef="let roba"> {{roba.naziv}} </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"  ></mat-row>
+    </table>
+  </div>
+
+  
+  

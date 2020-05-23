@@ -1,0 +1,168 @@
+<header>
+    <div>
+      <h1>Inline Editable Table</h1>
+    </div>
+    <mat-icon (click)="toggleTheme()" title="Change theme">format_color_fill</mat-icon>
+  </header>
+  <form [formGroup]="prometniDokumentForm">
+    <table class="table table-border" [ngClass]="{'table-dark': mode}">
+        <thead class="text-nowrap">
+          <th>Redni Broj Dokumenta</th>
+          <th>Tip Dokumenta</th>
+          <th>Magacin Preduzeca</th>
+          <th>Poslovni Partner/Magacin 2</th>
+          <th></th>
+        </thead>
+        <tbody>
+            <tr *ngIf="prometniDokumentForm.get('isEditable').value">
+              <td>
+                <mat-form-field>
+                  <input matInput type="text" formControlName="redniBroj" autocomplete="off">
+                  <mat-error *ngIf="prometniDokumentForm.get('redniBroj').invalid &&
+                    prometniDokumentForm.get('redniBroj').touched">
+                    Redni Broj je <strong>obavezan</strong>
+                  </mat-error>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <mat-select formControlName="tipPrometnogDokumenta">
+                    <mat-option (click)="showPoslovniParter()" value="PRIJEMNICA">Prijemnica</mat-option>
+                    <mat-option (click)="showPoslovniParter()" value="OTPREMNICA">Otpremnica</mat-option>
+                    <mat-option (click)="showMagacin2()" value="MM">Medju magacinski promet</mat-option>
+                  </mat-select>
+                  <mat-error *ngIf="prometniDokumentForm.get('tipPrometnogDokumenta').invalid &&
+                    prometniDokumentForm.get('tipPrometnogDokumenta').touched">
+                    Tip je <strong>obavezan</strong>
+                  </mat-error>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                    <mat-select formControlName="magacinId" >
+                        <mat-option *ngFor="let m of magacinList" [value]="m.id">{{m.naziv}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="prometniDokumentForm.get('magacinId').invalid &&
+                    prometniDokumentForm.get('magacinId').touched">
+                    Magacin je <strong>obavezan</strong>
+                  </mat-error>
+                  </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field *ngIf="showPP" >
+                    <mat-select formControlName="poslovniPartnerid" >
+                        <mat-option *ngFor="let pp of poslovniPartnerList" [value]="pp.id">{{pp.naziv}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="prometniDokumentForm.get('poslovniPartnerid').invalid &&
+                    prometniDokumentForm.get('poslovniPartnerid').touched">
+                    Poslovni partner je <strong>obavezan</strong>
+                  </mat-error>
+                  </mat-form-field>
+                  <mat-form-field *ngIf="!showPP">
+                    <mat-select formControlName="magacinId2" >
+                        <mat-option *ngFor="let m of magacinList" [value]="m.id">{{m.naziv}}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="prometniDokumentForm.get('magacinId2').invalid &&
+                    prometniDokumentForm.get('magacinId2').touched">
+                    Magacin je <strong>obavezan</strong>
+                  </mat-error>
+                  </mat-form-field>
+              </td>
+             
+              <td>
+                <mat-icon class="done" (click)="doneRowPrometni(prometniDokumentForm)">done</mat-icon>
+              </td>
+            </tr>
+            <tr *ngIf="!prometniDokumentForm.get('isEditable').value">
+              <td>
+                {{prometniDokumentForm.get('redniBroj').value}}
+              </td>
+              <td>
+                {{prometniDokumentForm.get('tipPrometnogDokumenta').value}}
+              </td>
+              <td>
+                  {{prometniDokumentForm.get('magacinId').value}}
+              </td>
+              <td>
+                  {{prometniDokumentForm.get('poslovniPartnerid').value}}
+              </td>
+             
+              <td>
+                <mat-icon class="edit" (click)="editRowPrometni(prometniDokumentForm)">edit</mat-icon>
+              </td>
+            </tr>
+        </tbody>
+    </table>
+  </form>
+  <div class="output">
+    <p>Form Data:  {{prometniDokumentForm.value | json}}</p>
+     <p>Is Valid: {{prometniDokumentForm.valid}}</p>
+ </div>
+  <form [formGroup]="userTable">
+      <table class="table table-border" [ngClass]="{'table-dark': mode}">
+        <thead class="text-nowrap">
+          <th>Naziv Robe</th>
+          <th>Kolicina</th>
+          <th>Cena</th>
+          <th></th>
+        </thead>
+        <tbody>
+          <ng-container formArrayName="tableRows" *ngFor="let group of getFormControls.controls ; let i=index">
+            <tr *ngIf="group.get('isEditable').value" [formGroupName]="i">
+              <td>
+                <mat-form-field>
+                  <mat-select formControlName="artikalCtrl" placeholder="Artikal" #singleSelect>
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="artikalFilterCtrl"></ngx-mat-select-search>
+                    </mat-option>
+                
+                    <mat-option *ngFor="let artikal of filteredArtikli | async" [value]="artikal">
+                       {{artikal.naziv}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput type="tetx" formControlName="kolicina" autocomplete="off">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field>
+                  <input matInput type="tetx" formControlName="cena" autocomplete="off">
+                </mat-form-field>
+              </td>
+              
+              <td>
+                <mat-icon class="delete" (click)="deleteRow(i)">delete_forever</mat-icon>
+                <mat-icon class="done" (click)="doneRow(group)">done</mat-icon>
+              </td>
+            </tr>
+            <tr *ngIf="!group.get('isEditable').value">
+                <td>
+                    {{group.get('artikalCtrl').value.naziv}}
+                </td>
+                <td>
+                    {{group.get('kolicina').value}}
+                </td>
+                <td>
+                    {{group.get('cena').value}}
+                </td>
+             
+              <td>
+                <mat-icon class="edit" (click)="editRow(group)">edit</mat-icon>
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <div class="action-container">
+        <button mat-raised-button type="submit" (click)="addRow()">Add row</button>
+        <button mat-raised-button [disabled]="userTable.invalid||prometniDokumentForm.invalid" type="submit" (click)="submitForm()">Submit</button>
+      </div>
+    </form>
+    <div class="output">
+       <p>Form Data:  {{userTable.value | json}}</p>
+        <p>Is Valid: {{userTable.valid}}</p>
+       
+    </div>

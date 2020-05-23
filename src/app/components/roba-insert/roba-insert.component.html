@@ -1,0 +1,71 @@
+<div style="margin-top: 1.5em;" style="background: rgb(250, 206, 228);">
+    <h3 style="text-align: center;">Dodaj Artikal</h3>
+  <mat-card style="margin: 1.5em;">
+    <mat-card-content style="background-color: rgb(233, 233, 233);">
+      <form  [formGroup]="robaForm" (ngSubmit)="onSubmitRoba(robaForm.value)" novalidate>
+  
+        <mat-form-field class="student" appearance="standard">
+          <mat-label>Sifra</mat-label>
+          <input formControlName="sifra" [errorStateMatcher]="matcher" pattern="[0-9]{5}" matInput placeholder="xxxxx">
+          <mat-error *ngIf="robaForm.get('sifra').invalid
+                && !robaForm.get('sifra').hasError('required')">
+            Sifra mora sadrzati tacno 5 cifara 
+          </mat-error>
+          <mat-error *ngIf="robaForm.get('sifra').hasError('required')">
+            Sifra je <strong>obavezna</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="student" appearance="standard">
+            <mat-label>Grupa roba</mat-label>
+            <mat-select formControlName="grupaRoba" >
+                <mat-option *ngFor="let grupa of grupaRobaList" [value]="grupa.id">{{grupa.naziv}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="robaForm.get('grupaRoba').invalid &&
+            robaForm.get('grupaRoba').touched">
+            Grupa roba je  <strong>obavezna</strong>
+          </mat-error>
+          </mat-form-field>
+  
+        <mat-form-field class="student" appearance="standard">
+          <mat-label>Pakovanje</mat-label>
+          <input formControlName="pakovanje" [errorStateMatcher]="matcher" pattern="[0-9]*" matInput placeholder="pakovanje">
+          <mat-error *ngIf="robaForm.get('pakovanje').invalid
+                && !robaForm.get('pakovanje').hasError('required')">
+            pakovanje mora sadrzati iskljucivo cifre 
+          </mat-error>
+          <mat-error *ngIf="robaForm.get('pakovanje').hasError('required')" >
+            Pakovanje je <strong>obavezno</strong>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="student" appearance="standard">
+            <mat-label>Jedinica mere</mat-label>
+            <mat-select formControlName="jedinicaMere" >
+                <mat-option *ngFor="let jedinica of jedinicaMereList" [value]="jedinica.id">{{jedinica.naziv}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="robaForm.get('jedinicaMere').invalid &&
+            robaForm.get('jedinicaMere').touched">
+            Jedinica mere je   <strong> obavezna </strong>
+          </mat-error>
+          </mat-form-field>
+  
+        <mat-form-field class="student" appearance="standard">
+          <mat-label>Naziv </mat-label>
+          <input formControlName="naziv" [errorStateMatcher]="matcher" matInput placeholder="naziv">
+          <mat-error >
+            Naziv je <strong>obavezan</strong>
+          </mat-error>
+        </mat-form-field>
+  
+        <div class="student" style="padding-bottom: 2em;">
+          <button [disabled]="!robaForm.valid" type="submit" mat-raised-button style="float: left;">Dodaj Artikal</button>
+          <!-- <button [disabled]="robaForm.value.id==null" type="button" (click)="onUpdate(robaForm.value)" mat-raised-button style="float: left;">Promeni Artikal</button> -->
+          <button type="button" mat-raised-button style="float: left;" (click)="onClear()">Clear</button>
+          <button type="button" mat-raised-button style="float: right;" (click)="onCancel()">Cancel</button>
+        </div>
+      </form>
+      {{robaForm.value | json}}
+    </mat-card-content>
+  </mat-card>
+  </div>
