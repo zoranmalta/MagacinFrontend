@@ -1,0 +1,76 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6" >
+            <mat-card class="example-card">
+                <mat-card-header>
+                  <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>Preduzece : {{prometniDokument.magacin.preduzece.naziv}}</mat-card-title>
+                  <mat-card-subtitle></mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>
+                    Description :
+                  </p>
+                </mat-card-content>
+                <mat-card-actions>
+                  <button mat-raised-button (click)="proknjizi()"  >Proknjizi</button>
+                  <button mat-raised-button (click)="storniraj()"  >Storniraj</button>
+                  <button mat-raised-button (click)="onBack()"  >Nazad</button>
+                </mat-card-actions>
+              </mat-card>
+        </div>
+        <div class="col-6" >
+           <div >
+            <mat-list  >
+              <mat-list-item  >Magacin :  {{prometniDokument.magacin.naziv}} </mat-list-item>
+              <mat-list-item  >Poslovna godina :  {{prometniDokument.poslovnaGodina.godinaEnd | date:'yyyy'}} </mat-list-item>
+              <mat-list-item  >Tip Dokumenta :  {{prometniDokument.tipPrometnogDokumenta}} </mat-list-item>
+              <mat-list-item  >Status Dokumenta :  {{prometniDokument.statusDokumenta}} </mat-list-item>
+            </mat-list>
+           </div>
+        </div>
+  </div>
+
+  <div class="mat-elevation-z8">
+          
+    <table mat-table [dataSource]="dataSource" >
+           <!-- Mard Column -->
+      <ng-container matColumnDef="sifra">
+        <mat-header-cell *matHeaderCellDef > Sifra </mat-header-cell>
+        <mat-cell *matCellDef="let stavka" >{{stavka.roba.sifra}} </mat-cell>
+      </ng-container>
+
+         <!-- Mard Column -->
+      <ng-container matColumnDef="pakovanje">
+        <mat-header-cell *matHeaderCellDef > Pakovanje </mat-header-cell>
+        <mat-cell *matCellDef="let stavka" >{{stavka.roba.pakovanje}} </mat-cell>
+      </ng-container>
+  
+      <!-- cardNumber Column -->
+      <ng-container matColumnDef="naziv">
+        <mat-header-cell *matHeaderCellDef > Naziv </mat-header-cell>
+        <mat-cell *matCellDef="let stavka"> {{stavka.roba.naziv}} </mat-cell>
+      </ng-container>
+
+       <!-- First Name Column -->
+       <ng-container matColumnDef="jedinicaMere">
+        <mat-header-cell *matHeaderCellDef> Jedinica mere</mat-header-cell>
+        <mat-cell *matCellDef="let stavka"> {{stavka.roba.jedinicaMere.naziv}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="kolicina">
+        <mat-header-cell *matHeaderCellDef> Kolicina </mat-header-cell>
+        <mat-cell *matCellDef="let stavka"> {{stavka.kolicina}} </mat-cell>
+      </ng-container>
+  
+      <ng-container matColumnDef="cena">
+        <mat-header-cell *matHeaderCellDef> Cena </mat-header-cell>
+        <mat-cell *matCellDef="let stavka" >{{stavka.cena}} </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"  ></mat-row>
+    </table>
+  </div>
+
+</div>

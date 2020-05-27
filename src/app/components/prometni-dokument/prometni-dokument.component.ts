@@ -7,6 +7,14 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { MatSelect } from '@angular/material/select';
 import { take, takeUntil } from 'rxjs/operators';
 import { RobaService } from 'src/app/services/roba.service';
+import { PrometniDokument } from 'src/app/model/prometniDokument';
+import { StavkaDokumenta } from 'src/app/model/stavkaDokumenta';
+import { PrometniDokumentService } from 'src/app/services/prometni-dokument.service';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DialogYesNoComponent } from '../dialog-yes-no/dialog-yes-no.component';
+import { MyErrorStateMatcher } from 'src/app/error-validators/MyErrorStateMatcher';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-prometni-dokument',
@@ -21,20 +29,32 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
   touchedRows: any;
   showPP:boolean=true
 
+  //validacija datuma fakture min-max i radni dani
+  minDate: Date;
+  maxDate: Date;
+  myFilter = (d: Date | null): boolean => {
+    const day = (d || new Date()).getDay();
+    // Prevent Saturday and Sunday from being selected.
+    return day !== 0 && day !== 6;
+  }
+  matcher = new MyErrorStateMatcher();
+
   magacinList:any[]=[]
   poslovniPartnerList:any[]=[]
 
   prometniDokumentForm=this.fb.group({
     redniBroj:["",Validators.required],
+    datumFakturisanja:['',Validators.required],
     tipPrometnogDokumenta:["",Validators.required],
-    magacinId:["",Validators.required],
-    poslovniPartnerid:["",Validators.required],
-    magacinId2:[""],
+    magacin:["",Validators.required],
+    poslovniPartner:[null],
+    magacin2:[null],
     isEditable:[true]
   })
+  
    /** list of banks */
    protected artikli: Roba[] = [];
- 
+
    /** control for the MatSelect filter keyword */
    public artikalFilterCtrl: FormControl = new FormControl();
  
@@ -47,7 +67,13 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
    protected _onDestroy = new Subject<void>();
 
   constructor(private fb: FormBuilder,private poslovniPartnerService:PoslovniPartnerService
-    ,private magacinService:MagacinService,private robaService:RobaService) { }
+    ,private magacinService:MagacinService,private robaService:RobaService
+    ,private prometniDokumentService:PrometniDokumentService,private dialog: MatDialog
+    ,private snackBar:MatSnackBar,private router:Router) { 
+      const currentYear = new Date().getFullYear();
+      this.minDate = new Date(currentYear - 0, 0, 1);
+      this.maxDate = new Date();
+    }
 
   ngAfterViewInit(): void {
     this.setInitialValue();
@@ -100,8 +126,8 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
   initiateForm(): FormGroup {
     return this.fb.group({
       artikalCtrl: ['',Validators.required],
-      kolicina: ['',Validators.required],
-      cena: ['',Validators.required],
+      kolicina: ['',[Validators.required,Validators.pattern('[0-9]*')]],
+      cena: ['',[Validators.required,Validators.pattern('[0-9]*')]],
       isEditable: [true]
     });
   }
@@ -121,17 +147,9 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
     group.get('isEditable').setValue(true);
   }
 
-  editRowPrometni(prometniDokumentForm:FormGroup){
-    prometniDokumentForm.get('isEditable').setValue(true);
-  }
-
   doneRow(group: FormGroup) {
     console.log("done row selected")
     group.get('isEditable').setValue(false);
-  }
- 
-  doneRowPrometni(prometniDokumentForm:FormGroup){
-    prometniDokumentForm.get('isEditable').setValue(false)
   }
 
   saveUserDetails() {
@@ -143,16 +161,82 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
     return control;
   }
 
+  insertPrijemnicaDokument(control:FormArray){
+    const prometniDokumentNew=new PrometniDokument()
+    prometniDokumentNew.redniBroj=this.prometniDokumentForm.get('redniBroj').value;
+    prometniDokumentNew.tipPrometnogDokumenta=this.prometniDokumentForm.get('tipPrometnogDokumenta').value;
+    prometniDokumentNew.magacin=this.prometniDokumentForm.get('magacin').value;
+    //prometniDokumentNew.magacin2=this.prometniDokumentForm.get('magacin2').value;
+    prometniDokumentNew.poslovniPartner=this.prometniDokumentForm.get('poslovniPartner').value;
+    prometniDokumentNew.datumFormiranja=this.prometniDokumentForm.get("datumFakturisanja").value;
+    prometniDokumentNew.statusDokumenta="U_Fazi_Knjizenja"
+    this.touchedRows.forEach(element => {
+      let stavkanew=new StavkaDokumenta();
+      stavkanew.roba=element.artikalCtrl
+      stavkanew.kolicina=element.kolicina
+      stavkanew.cena=element.cena
+      stavkanew.vrednost=stavkanew.cena*stavkanew.kolicina
+      prometniDokumentNew.stavke.push(stavkanew);
+    });
+
+ // let's call our modal window
+    const dialogRef = this.dialog.open(DialogYesNoComponent, {
+      maxWidth: "450px",
+      data:{
+        title:"Potvrdi ?",
+        message:`Kreiraj Prometni Dokument(Prijemnica) : ${prometniDokumentNew.redniBroj}`
+      }
+    });
+    // listen to response
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      console.log(dialogResult)
+      if(dialogResult == true){
+        this.prometniDokumentService.insertPrijemnicaDokument(prometniDokumentNew).subscribe(
+          data=>{
+            this.snackBar.open(`Prometni dokument ${data.redniBroj}  je kreiran. `,"",{duration:3000})
+            control.clear();
+            this.addRow();
+            this.router.navigate(['/prikazprometnogdokumenta'],{state:{paramObject:data,navigateBack:"kreirajdokument"}})
+          },
+          error=>{
+            console.log("greska pri insertu prometnog dokumenta")
+            this.snackBar.open("Prometni dokument nije kreiran","",{duration:3000})
+            control.clear();
+            this.addRow()
+          }
+        )
+      }else{
+        this.snackBar.open(`Canceled`,"",{duration:2500})
+        control.clear();
+        this.addRow()
+      }
+    });
+  }
+
   submitForm() {
     const control = this.userTable.get('tableRows') as FormArray;
     this.touchedRows = control.controls.filter(row => row.touched).map(row => row.value);
     console.log(this.touchedRows);
-  }
-  showPoslovniParter(){
-    this.showPP=true
+    if(this.prometniDokumentForm.get('tipPrometnogDokumenta').value=="PRIJEMNICA"){
+      console.log("kreiramo prijemnicu")
+      this.insertPrijemnicaDokument(control)
+    }
+    if(this.prometniDokumentForm.get('tipPrometnogDokumenta').value=="OTPREMNICA"){
+      console.log("kreiramo OTPREMNICA")
+    }
+    if(this.prometniDokumentForm.get('tipPrometnogDokumenta').value=="MM"){
+      console.log("kreiramo MM")
+    }
+   
   }
 
+  showPoslovniParter(){
+    this.prometniDokumentForm.get('magacin2').reset();
+    this.showPP=true
+  }
+  
   showMagacin2(){
+    this.prometniDokumentForm.get("poslovniPartner").reset();
     this.showPP=false
   }
 
@@ -161,7 +245,7 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
   }
 
   /**
-   * Sets the initial value after the filteredBanks are loaded initially
+   * Sets the initial value after the filteredArtikli are loaded initially
    */
   protected setInitialValue() {
     this.filteredArtikli
@@ -170,7 +254,7 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
         // setting the compareWith property to a comparison function
         // triggers initializing the selection according to the initial value of
         // the form control (i.e. _initializeSelection())
-        // this needs to be done after the filteredBanks are loaded initially
+        // this needs to be done after the filteredArtikli are loaded initially
         // and after the mat-option elements are available
         this.singleSelect.compareWith = (a: Roba, b: Roba) => a && b && a.id === b.id;
       });

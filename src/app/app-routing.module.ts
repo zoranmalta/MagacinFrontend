@@ -4,13 +4,17 @@ import { HomepageComponent } from './components/homepage/homepage.component';
 import { RobaComponent } from './components/roba/roba.component';
 import { RobaInsertComponent } from './components/roba-insert/roba-insert.component';
 import { PrometniDokumentComponent } from './components/prometni-dokument/prometni-dokument.component';
+import { PrikazPrometnogDokumentaComponent } from './components/prikaz-prometnog-dokumenta/prikaz-prometnog-dokumenta.component';
+import { ListaPrometnihDokumenataComponent } from './components/lista-prometnih-dokumenata/lista-prometnih-dokumenata.component';
 
 
 const routes: Routes = [
   { path : "home" , component : HomepageComponent },
   { path : "roba" , component : RobaComponent},
   { path : "robainsert" , component : RobaInsertComponent},
-  { path : "prometnidokument" , component : PrometniDokumentComponent},
+  { path : "kreirajdokument" , component : PrometniDokumentComponent},
+  { path : "prikazprometnogdokumenta" , component : PrikazPrometnogDokumentaComponent},
+  { path : "listaprometnidokument" , component : ListaPrometnihDokumenataComponent},
 
   { path : "**" , component : HomepageComponent}
 ];

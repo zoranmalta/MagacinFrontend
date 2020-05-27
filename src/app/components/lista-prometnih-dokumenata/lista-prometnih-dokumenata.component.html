@@ -1,0 +1,65 @@
+<div class="mat-elevation-z8">
+    <h4 style="text-align: center;">Lista Dokumenata od 00000 do 99999</h4>
+    <div class="row">
+      <div class="col-4" >
+        <mat-form-field style="margin-left: 0.8em;">
+          <mat-label>Pretraga</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+        </mat-form-field>
+      </div>
+     
+      <div class="col-8" style="float: right;"> 
+        <mat-paginator [pageSizeOptions]="[8, 16, 32]" showFirstLastButtons></mat-paginator>
+      </div>
+      
+    </div>
+  
+    <table mat-table [dataSource]="dataSource" matSort >
+
+        <ng-container matColumnDef="redniBroj">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Redni Broj </mat-header-cell>
+            <mat-cell *matCellDef="let prometniDokument "> {{prometniDokument.redniBroj}} </mat-cell>
+          </ng-container>
+  
+      <!-- Sifra Column -->
+      <ng-container matColumnDef="tipPrometnogDokumenta">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Tip dokumenta </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument"> {{prometniDokument.tipPrometnogDokumenta}} </mat-cell>
+      </ng-container>
+
+       <!-- Grupa Column -->
+       <ng-container matColumnDef="poslovniPartner">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Poslovni Partner </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument"> {{prometniDokument.poslovniPartner.naziv}} </mat-cell>
+      </ng-container>
+  
+      <!-- Pakovanje Column -->
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef> Status </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument"> {{prometniDokument.statusDokumenta}} </mat-cell>
+      </ng-container>
+  
+      <!-- Jed. mere Column -->
+      <ng-container matColumnDef="datumFormiranja">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Datum Formiranja </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument "> {{prometniDokument.datumFormiranja|date :'dd:MM:yyyy'}} </mat-cell>
+      </ng-container>
+  
+      <!-- Naziv Column -->
+      <ng-container matColumnDef="datumKnjizenja">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Datum knjizenja </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument"> {{prometniDokument.datumKnjizenja | date:"dd:MM:yyyy"}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="details">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
+        <mat-cell *matCellDef="let prometniDokument">
+          <button type="button" mat-raised-button style="float: right;" (click)=" details(prometniDokument)">Detalji</button>
+        </mat-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;" ></mat-row>
+    </table>
+  </div>
+

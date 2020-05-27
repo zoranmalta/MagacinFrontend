@@ -1,6 +1,7 @@
 export class PoslovnaGodina{
     id:number;
     zakljucena:boolean;
-    godina:Date;
+    godinaStart:Date;
+    godinaEnd:Date;
     aktivna:boolean;
 }

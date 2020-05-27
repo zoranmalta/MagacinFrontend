@@ -33,6 +33,8 @@ import { MatNativeDateModule } from '@angular/material/core'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RobaInsertComponent } from './components/roba-insert/roba-insert.component';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { PrikazPrometnogDokumentaComponent } from './components/prikaz-prometnog-dokumenta/prikaz-prometnog-dokumenta.component';
+import { ListaPrometnihDokumenataComponent } from './components/lista-prometnih-dokumenata/lista-prometnih-dokumenata.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +49,9 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
     LagerListaComponent,
     RobaComponent,
     DialogYesNoComponent,
-    RobaInsertComponent
+    RobaInsertComponent,
+    PrikazPrometnogDokumentaComponent,
+    ListaPrometnihDokumenataComponent
 
   ],
   entryComponents: [DialogYesNoComponent],
