@@ -9,7 +9,7 @@
       </div>
      
       <div class="col-8" style="float: right;"> 
-        <mat-paginator [pageSizeOptions]="[8, 16, 32]" showFirstLastButtons></mat-paginator>
+        <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
       </div>
       
     </div>
@@ -30,7 +30,14 @@
        <!-- Grupa Column -->
        <ng-container matColumnDef="poslovniPartner">
         <mat-header-cell *matHeaderCellDef mat-sort-header> Poslovni Partner </mat-header-cell>
-        <mat-cell *matCellDef="let prometniDokument"> {{prometniDokument.poslovniPartner.naziv}} </mat-cell>
+        <mat-cell *matCellDef="let prometniDokument">
+          <div *ngIf="prometniDokument.poslovniPartner!=null">
+            {{prometniDokument.poslovniPartner.naziv}} 
+          </div>
+          <div *ngIf="prometniDokument.magacin2!=null">
+            {{prometniDokument.magacin2.naziv}} 
+          </div>
+          </mat-cell>
       </ng-container>
   
       <!-- Pakovanje Column -->

@@ -13,8 +13,10 @@
                   </p>
                 </mat-card-content>
                 <mat-card-actions>
-                  <button mat-raised-button (click)="proknjizi()"  >Proknjizi</button>
-                  <button mat-raised-button (click)="storniraj()"  >Storniraj</button>
+                  <button mat-raised-button [disabled]="prometniDokument.statusDokumenta=='Proknjizen'||
+                    prometniDokument.statusDokumenta=='Storniran'" (click)="proknjizi()"  >Proknjizi</button>
+                  <button mat-raised-button [disabled]="prometniDokument.statusDokumenta=='Storniran'" 
+                    (click)="storniraj()"  >Storniraj</button>
                   <button mat-raised-button (click)="onBack()"  >Nazad</button>
                 </mat-card-actions>
               </mat-card>

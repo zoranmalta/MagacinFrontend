@@ -15,6 +15,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogYesNoComponent } from '../dialog-yes-no/dialog-yes-no.component';
 import { MyErrorStateMatcher } from 'src/app/error-validators/MyErrorStateMatcher';
 import { Router } from '@angular/router';
+import { RobnaKartica } from 'src/app/model/robnaKartica';
 
 @Component({
   selector: 'app-prometni-dokument',
@@ -41,6 +42,7 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
 
   magacinList:any[]=[]
   poslovniPartnerList:any[]=[]
+  robnaKarticaList:RobnaKartica[]=[]
 
   prometniDokumentForm=this.fb.group({
     redniBroj:["",Validators.required],
@@ -161,12 +163,106 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
     return control;
   }
 
+  insertMMDokument(control:FormArray){
+    const prometniDokumentNew=this.setPrometniDokument()
+     // let's call our modal window
+     const dialogRef = this.dialog.open(DialogYesNoComponent, {
+      maxWidth: "450px",
+      data:{
+        title:"Potvrdi ?",
+        message:`Kreiraj Prometni Dokument(MedjuMagacinski) : ${prometniDokumentNew.redniBroj}`
+      }
+    });
+    // listen to response
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      console.log(dialogResult)
+      if(dialogResult == true){
+        this.prometniDokumentService.insertMMDokument(prometniDokumentNew).subscribe(
+          data=>{
+            this.snackBar.open(`Prometni dokument ${data.redniBroj}  je kreiran. `,"",{duration:3000})
+            control.clear();
+            this.addRow();
+            this.router.navigate(['/prikazprometnogdokumenta'],{state:{paramObject:data,navigateBack:"kreirajdokument"}})
+          },
+          error=>{
+            console.log("greska pri insertu prometnog dokumenta")
+            this.snackBar.open("Prometni dokument nije kreiran !! Nema dovoljno kolicina svih proizvoda u magacinu!!","",{duration:6000})
+            control.clear();
+            this.addRow()
+          }
+        )
+      }else{
+        this.snackBar.open(`Canceled`,"",{duration:2500})
+        control.clear();
+        this.addRow()
+      }
+    });
+  }
+
+  insertOtpremnicaDokument(control:FormArray){
+    const prometniDokumentNew=this.setPrometniDokument()
+     // let's call our modal window
+     const dialogRef = this.dialog.open(DialogYesNoComponent, {
+      maxWidth: "450px",
+      data:{
+        title:"Potvrdi ?",
+        message:`Kreiraj Prometni Dokument(Otpremnica) : ${prometniDokumentNew.redniBroj}`
+      }
+    });
+    // listen to response
+    dialogRef.afterClosed().subscribe(dialogResult => {
+      console.log(dialogResult)
+      if(dialogResult == true){
+        this.prometniDokumentService.insertOtpremnicaDokument(prometniDokumentNew).subscribe(
+          data=>{
+            this.snackBar.open(`Prometni dokument ${data.redniBroj}  je kreiran. `,"",{duration:3000})
+            control.clear();
+            this.addRow();
+            this.router.navigate(['/prikazprometnogdokumenta'],{state:{paramObject:data,navigateBack:"kreirajdokument"}})
+          },
+          error=>{
+            console.log("greska pri insertu prometnog dokumenta")
+            this.snackBar.open("Prometni dokument nije kreiran !! Nema dovoljno kolicina svih proizvoda u magacinu!!","",{duration:5000})
+            control.clear();
+            this.addRow()
+          }
+        )
+      }else{
+        this.snackBar.open(`Canceled`,"",{duration:2500})
+        control.clear();
+        this.addRow()
+      }
+    });
+  }  
+
+  setPrometniDokument(){
+    const prometniDokumentNew=new PrometniDokument()
+    prometniDokumentNew.redniBroj=this.prometniDokumentForm.get('redniBroj').value;
+    prometniDokumentNew.tipPrometnogDokumenta=this.prometniDokumentForm.get('tipPrometnogDokumenta').value;
+    prometniDokumentNew.magacin=this.prometniDokumentForm.get('magacin').value;
+    prometniDokumentNew.magacin2=this.prometniDokumentForm.get('magacin2').value;
+    prometniDokumentNew.poslovniPartner=this.prometniDokumentForm.get('poslovniPartner').value;
+    prometniDokumentNew.datumFormiranja=this.prometniDokumentForm.get("datumFakturisanja").value;
+    prometniDokumentNew.statusDokumenta="U_Fazi_Knjizenja"
+    this.touchedRows.forEach(element => {
+      let stavkanew=new StavkaDokumenta();
+      stavkanew.roba=element.artikalCtrl
+      stavkanew.kolicina=element.kolicina
+      stavkanew.cena=element.cena
+      stavkanew.vrednost=stavkanew.cena*stavkanew.kolicina
+      prometniDokumentNew.stavke.push(stavkanew);
+    });
+    return prometniDokumentNew
+  }
+
+  insertValidatedOtpremnica(){}
+
   insertPrijemnicaDokument(control:FormArray){
     const prometniDokumentNew=new PrometniDokument()
     prometniDokumentNew.redniBroj=this.prometniDokumentForm.get('redniBroj').value;
     prometniDokumentNew.tipPrometnogDokumenta=this.prometniDokumentForm.get('tipPrometnogDokumenta').value;
     prometniDokumentNew.magacin=this.prometniDokumentForm.get('magacin').value;
-    //prometniDokumentNew.magacin2=this.prometniDokumentForm.get('magacin2').value;
+    prometniDokumentNew.magacin2=this.prometniDokumentForm.get('magacin2').value;
     prometniDokumentNew.poslovniPartner=this.prometniDokumentForm.get('poslovniPartner').value;
     prometniDokumentNew.datumFormiranja=this.prometniDokumentForm.get("datumFakturisanja").value;
     prometniDokumentNew.statusDokumenta="U_Fazi_Knjizenja"
@@ -222,12 +318,14 @@ export class PrometniDokumentComponent implements OnInit, AfterViewInit, OnDestr
       this.insertPrijemnicaDokument(control)
     }
     if(this.prometniDokumentForm.get('tipPrometnogDokumenta').value=="OTPREMNICA"){
-      console.log("kreiramo OTPREMNICA")
+      console.log("kreiramo OTPREMNICA");
+      this.insertOtpremnicaDokument(control)
     }
     if(this.prometniDokumentForm.get('tipPrometnogDokumenta').value=="MM"){
       console.log("kreiramo MM")
+      this.insertMMDokument(control)
     }
-   
+  
   }
 
   showPoslovniParter(){
