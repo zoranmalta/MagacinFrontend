@@ -1,1 +1,82 @@
-<p>lager-lista works!</p>
+<div class="mat-elevation-z8">
+    <h4 style="text-align: center;">Lager lista</h4>
+    <div class="row">
+      <div class="col-3" >
+        <mat-form-field style="margin-left: 0.8em;">
+          <mat-label>Pretraga</mat-label>
+          <input matInput (keyup)="applyFilter($event)" placeholder="Search">
+        </mat-form-field>
+      </div>
+      <div class="col-2" >
+        
+            <mat-select [(value)]="centralni" >
+                <mat-option (click)="onClick(m.id)" *ngFor="let m of magacinList" [value]="m">{{m.naziv}}</mat-option>
+            </mat-select>
+        
+      </div>
+      <div class="col-1" >
+        <button type="button" mat-raised-button (click)="onReport()">Rep.</button>
+      </div>
+      <div class="col-6" style="float: right;"> 
+        <mat-paginator [pageSizeOptions]="[8, 16, 32]" showFirstLastButtons></mat-paginator>
+      </div>
+      
+    </div>
+  
+    <table mat-table [dataSource]="dataSource" matSort >
+  
+      <!-- Sifra Column -->
+      <ng-container matColumnDef="sifra">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Sifra </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.roba.sifra}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> Ukupna Vrednost </mat-footer-cell>
+      </ng-container>
+  
+      <!-- Pakovanje Column -->
+      <ng-container matColumnDef="pakovanje">
+        <mat-header-cell *matHeaderCellDef> Pak </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.roba.pakovanje}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+      </ng-container>
+  
+      <!-- Jed. mere Column -->
+      <ng-container matColumnDef="jedinicaMere">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Jed. mere </mat-header-cell>
+        <mat-cell *matCellDef="let kartica "> {{kartica.roba.jedinicaMere.naziv}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+      </ng-container>
+  
+      <!-- Naziv Column -->
+      <ng-container matColumnDef="naziv">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Naziv Artikla </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.roba.naziv}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+      </ng-container>
+
+       <!-- Kolicina Column -->
+       <ng-container matColumnDef="kolicina">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Kolicina </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.ukupnaKolicina}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+      </ng-container>
+
+       <!-- Cena Column -->
+       <ng-container matColumnDef="cena">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Cena </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.cena}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
+      </ng-container>
+
+       <!-- Vrednost Column -->
+       <ng-container matColumnDef="vrednost">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> Vrednost </mat-header-cell>
+        <mat-cell *matCellDef="let kartica"> {{kartica.ukupnaVrednost}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>{{getTotal() | number: '.2-2'}}  </mat-footer-cell>
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"  ></mat-row>
+      <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
+
+    </table>
+  </div>

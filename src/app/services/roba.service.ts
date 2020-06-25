@@ -15,7 +15,6 @@ export class RobaService {
   readonly insertRobaUrl=`${environment.apiBaseUri}/roba/insert`
   readonly reportRobaUrl=`${environment.apiBaseUri}/roba/izvestaj`
 
-
   readonly getJedinicaMereUrl=`${environment.apiBaseUri}/jedinicamere/all`;
   readonly getGrupaRobaUrl=`${environment.apiBaseUri}/gruparoba/all`
 
