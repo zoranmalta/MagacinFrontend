@@ -79,8 +79,14 @@ export class LagerListaComponent implements OnInit {
 
   onReport(){
     this.lagerService.reportLager(this.magacinIdGlobal).subscribe(
-      data=>console.log("kreiran pdf : "+data),
-      error=>console.log("greska pri kreiranju reporta"+error.string)
+      data=>{
+        console.log("kreiran pdf : "+data)
+        this.snackBar.open("PDF Dokument je formiran!","",{duration:3000})
+      },
+      error=>{
+        console.log("greska pri kreiranju reporta"+error.string)
+        this.snackBar.open("PDF Dokument nije formiran!","",{duration:3000})
+      }
     );
   }
 

@@ -4,6 +4,7 @@ import { PrometniDokument } from 'src/app/model/prometniDokument';
 import { MyErrorStateMatcher } from 'src/app/error-validators/MyErrorStateMatcher';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { PrometniDokumentService } from 'src/app/services/prometni-dokument.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-prikaz-prometnog-dokumenta',
@@ -20,7 +21,8 @@ export class PrikazPrometnogDokumentaComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   @ViewChild(MatTable, {static:true}) table: MatTable<any>;
 
-  constructor(private router:Router,private prometniDokumentService:PrometniDokumentService) { }
+  constructor(private router:Router,private prometniDokumentService:PrometniDokumentService,
+    private snackBar:MatSnackBar) { }
 
   ngOnInit(): void {
     //primamo ceo objekat Prometnidokument preko brauzera history.state.paramObject(ime objekta paramObject)
@@ -34,8 +36,12 @@ export class PrikazPrometnogDokumentaComponent implements OnInit {
       data=>{
         this.prometniDokument=data;
         this.dataSource.data=this.prometniDokument.stavke
+        this.snackBar.open("Dokument je proknjizen!","",{duration:3000})
       },
-      error=>console.log("greska pri knjizenju")
+      error=>{
+        console.log("greska pri knjizenju")
+        this.snackBar.open("Dokument nije proknjizen!","",{duration:3000})
+      }
     )
   }
   storniraj(){
@@ -43,8 +49,13 @@ export class PrikazPrometnogDokumentaComponent implements OnInit {
       data=>{
         this.prometniDokument=data
         console.log("storniranje uspesno")
+        this.snackBar.open("Dokument je storiniran!","",{duration:3000})
       },
-      error=>{console.log("greska storno dokumenta ")}
+      error=>{
+        console.log("greska storno dokumenta ")
+        this.snackBar.open("Dokument nije moguce storinirati!","",{duration:3000})
+      }
+
     )
   }
 

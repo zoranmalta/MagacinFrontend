@@ -33,12 +33,13 @@
   </div>
 
   <div class="mat-elevation-z8">
-          
+          <h3 style="text-align: center;">Robna kartica sa analitikom</h3>
     <table mat-table [dataSource]="dataSource" >
            <!-- Datum Column -->
       <ng-container matColumnDef="datum">
         <mat-header-cell *matHeaderCellDef > Datum </mat-header-cell>
         <mat-cell *matCellDef="let analitika" >{{analitika.datumFormiranja | date:"dd:MM:yyyy"}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> Ukupno :  </mat-footer-cell>
       </ng-container>
 
          <!-- Tip Column -->
@@ -47,6 +48,7 @@
         <mat-cell *matCellDef="let analitika" >
             <span *ngIf="analitika.stavkaDokumenta">{{analitika.tipPrometa}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
       </ng-container>
   
       <!-- dokument Column -->
@@ -55,12 +57,14 @@
         <mat-cell  *matCellDef="let analitika">
             <span *ngIf="analitika.stavkaDokumenta">{{analitika.stavkaDokumenta.prometniDokument.redniBroj}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
       </ng-container>
 
       <!-- smer Column -->
       <ng-container matColumnDef="smer">
         <mat-header-cell *matHeaderCellDef > Smer </mat-header-cell>
         <mat-cell  *matCellDef="let analitika"> {{analitika.smer}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
       </ng-container>
 
       <!-- Ulaz Column -->
@@ -70,6 +74,7 @@
             <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='OTPREMLJENO'">{{-analitika.kolicina}}</span>
             <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='DOBAVLJENO'">{{analitika.kolicina}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.kolicinaUlaza}} </mat-footer-cell>
       </ng-container>
 
        <!-- Izlaz Column -->
@@ -78,18 +83,21 @@
         <mat-cell  *matCellDef="let analitika">
             <span *ngIf="analitika.smer=='IZLAZ'">{{analitika.kolicina}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.kolicinaIzlaza}} </mat-footer-cell>
       </ng-container>
 
       <!-- Saldo Column -->
       <ng-container matColumnDef="saldo">
         <mat-header-cell *matHeaderCellDef > Saldo </mat-header-cell>
         <mat-cell  *matCellDef="let analitika"> {{getSaldo(analitika)}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.ukupnaKolicina}} </mat-footer-cell>
       </ng-container>
 
        <!-- cena Column -->
        <ng-container matColumnDef="cena">
         <mat-header-cell *matHeaderCellDef > Cena </mat-header-cell>
         <mat-cell  *matCellDef="let analitika"> {{analitika.cena}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef>  </mat-footer-cell>
       </ng-container>
 
        <!-- Vrednost ulaza Column -->
@@ -99,6 +107,7 @@
             <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='OTPREMLJENO'">{{-analitika.vrednost}}</span>
             <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='DOBAVLJENO'">{{analitika.vrednost}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.vrednostUlaza}} </mat-footer-cell>
       </ng-container>
 
        <!-- Vrednost izlaza Column -->
@@ -107,16 +116,19 @@
         <mat-cell  *matCellDef="let analitika">
             <span *ngIf="analitika.smer=='IZLAZ'">{{analitika.vrednost}}</span>
         </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.vrednostIzlaza}} </mat-footer-cell>
       </ng-container>
 
       <!-- Ukupna vrednost Column -->
       <ng-container matColumnDef="ukupnaVrednost">
         <mat-header-cell *matHeaderCellDef > Uk. vrednost </mat-header-cell>
         <mat-cell  *matCellDef="let analitika"> {{getUkupnaVrednost(analitika)}} </mat-cell>
+        <mat-footer-cell *matFooterCellDef> {{robnaKartica.ukupnaVrednost }} </mat-footer-cell>
       </ng-container>
        
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"  ></mat-row>
+      <mat-footer-row *matFooterRowDef="displayedColumns"></mat-footer-row>
     </table>
   </div>
 

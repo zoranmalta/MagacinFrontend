@@ -17,6 +17,7 @@ export class ListaPrometnihDokumenataComponent implements OnInit {
 
   dataSource:any
   dokumentiList:PrometniDokument[]=[]
+  dokumentiListTemp:PrometniDokument[]=[]
   displayedColumns: string[] = ['redniBroj','tipPrometnogDokumenta','poslovniPartner','status','datumFormiranja','datumKnjizenja','details']
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -41,6 +42,9 @@ export class ListaPrometnihDokumenataComponent implements OnInit {
   details(prometniDokument:PrometniDokument){
     //otvaram detalje i saljem objekat prometnogDokumenta i string za navigaciju nazad na ovu stranu
     this.router.navigate(['/prikazprometnogdokumenta'],{state:{paramObject:prometniDokument,navigateBack:"listaprometnidokument"}})
+  }
+
+  zakljuciPoslovnuGodinu(){
   }
 
  //event uzima element sa htmla i njegovu vrednost koju prosledjuje filteru

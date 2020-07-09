@@ -5,6 +5,7 @@ import { MyErrorStateMatcher } from 'src/app/error-validators/MyErrorStateMatche
 import { Router } from '@angular/router';
 import { LagerService } from 'src/app/services/lager.service';
 import { AnalitikaMagacinskeKartice } from 'src/app/model/analitikaMagacinskeKartice';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-robna-kartica',
@@ -23,7 +24,8 @@ export class RobnaKarticaComponent implements OnInit {
   matcher = new MyErrorStateMatcher();
   @ViewChild(MatTable, {static:true}) table: MatTable<any>;
 
-  constructor(private router:Router,private lagerService:LagerService) { 
+  constructor(private router:Router,private lagerService:LagerService,
+    private snackBar:MatSnackBar) { 
 
   }
 
@@ -97,8 +99,14 @@ export class RobnaKarticaComponent implements OnInit {
 
   onReport(){
     this.lagerService.reportAnalitika(this.robnaKartica.id).subscribe(
-      data=>console.log("kreiran pdf : "+data),
-      error=>console.log("greska pri kreiranju reporta"+error.string)
+      data=>{
+        console.log("kreiran pdf : "+data)
+        this.snackBar.open("PDF Dokument je formiran!","",{duration:3000})
+      },
+      error=>{
+        console.log("greska pri kreiranju reporta"+error.string)
+        this.snackBar.open("PDF Dokument nije formiran!","",{duration:3000})
+      }
     );
   }
 

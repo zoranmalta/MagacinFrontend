@@ -7,8 +7,10 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Search">
         </mat-form-field>
       </div>
-     
-      <div class="col-8" style="float: right;"> 
+      <div class="col-1" >
+        <button type="button" mat-raised-button (click)="zakljuciPoslovnuGodinu()">Zakljuci</button>
+      </div>
+      <div class="col-7" style="float: right;"> 
         <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
       </div>
       
