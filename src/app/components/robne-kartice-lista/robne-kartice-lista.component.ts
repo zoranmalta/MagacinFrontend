@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Magacin } from 'src/app/model/magacin';
+import { RobnaKartica } from 'src/app/model/robnaKartica';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -7,22 +8,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MagacinService } from 'src/app/services/magacin.service';
-import { RobnaKartica } from 'src/app/model/robnaKartica';
 import { LagerService } from 'src/app/services/lager.service';
 
 @Component({
-  selector: 'app-lager-lista',
-  templateUrl: './lager-lista.component.html',
-  styleUrls: ['./lager-lista.component.css']
+  selector: 'app-robne-kartice-lista',
+  templateUrl: './robne-kartice-lista.component.html',
+  styleUrls: ['./robne-kartice-lista.component.css']
 })
-export class LagerListaComponent implements OnInit {
+export class RobneKarticeListaComponent implements OnInit {
 
   magacinList:Magacin[]=[]
   magacinIdGlobal:number
   centralni:Magacin
   robnaKarticaList:RobnaKartica[]=[]
   dataSource:any
-  displayedColumns: string[] = ['sifra','pakovanje','jedinicaMere','naziv','kolicina','cena','vrednost']
+  displayedColumns: string[] = ['sifra','jedinicaMere','naziv','kolicina','cena','vrednost','details']
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -40,7 +40,7 @@ export class LagerListaComponent implements OnInit {
           this.magacinIdGlobal=this.centralni.id
           this.lagerService.listaRobnihKartica(this.centralni.id).subscribe(
             data=>{
-              this.robnaKarticaList=data.filter(element => {return element.ukupnaKolicina>0})
+              this.robnaKarticaList=data
               this.dataSource=new MatTableDataSource(this.robnaKarticaList);
               this.dataSource.paginator = this.paginator;
               this.dataSource.sort=this.sort;
@@ -59,7 +59,7 @@ export class LagerListaComponent implements OnInit {
     this.magacinIdGlobal=magacinId
     this.lagerService.listaRobnihKartica(magacinId).subscribe(
       data=>{
-        this.robnaKarticaList=data.filter(element => { return element.ukupnaKolicina>0})
+        this.robnaKarticaList=data
         this.dataSource=new MatTableDataSource(this.robnaKarticaList);
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort=this.sort;
@@ -69,19 +69,19 @@ export class LagerListaComponent implements OnInit {
       }
     )
   }
+
+  details(kartica:RobnaKartica){
+    //otvaram detalje i saljem objekat kartica 
+    this.router.navigate(['/robnakartica'],{state:{paramObject:kartica}})
+  }
+
+
   getTotal():number{
     let total:number=0;
     this.robnaKarticaList.forEach(element => {
         total +=element.ukupnaVrednost
     })
     return total
-  }
-
-  onReport(){
-    this.lagerService.reportLager(this.magacinIdGlobal).subscribe(
-      data=>console.log("kreiran pdf : "+data),
-      error=>console.log("greska pri kreiranju reporta"+error.string)
-    );
   }
 
    //event uzima element sa htmla i njegovu vrednost koju prosledjuje filteru

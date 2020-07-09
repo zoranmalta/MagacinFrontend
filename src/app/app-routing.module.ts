@@ -7,11 +7,15 @@ import { PrometniDokumentComponent } from './components/prometni-dokument/promet
 import { PrikazPrometnogDokumentaComponent } from './components/prikaz-prometnog-dokumenta/prikaz-prometnog-dokumenta.component';
 import { ListaPrometnihDokumenataComponent } from './components/lista-prometnih-dokumenata/lista-prometnih-dokumenata.component';
 import { LagerListaComponent } from './components/lager-lista/lager-lista.component';
+import { RobneKarticeListaComponent } from './components/robne-kartice-lista/robne-kartice-lista.component';
+import { RobnaKarticaComponent } from './components/robna-kartica/robna-kartica.component';
 
 
 const routes: Routes = [
   { path : "home" , component : HomepageComponent },
   { path : "lager" , component : LagerListaComponent },
+  { path : "robnekarticelista" , component : RobneKarticeListaComponent },
+  { path : "robnakartica" , component : RobnaKarticaComponent},
 
   { path : "roba" , component : RobaComponent},
   { path : "robainsert" , component : RobaInsertComponent},

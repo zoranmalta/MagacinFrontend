@@ -35,6 +35,8 @@ import { RobaInsertComponent } from './components/roba-insert/roba-insert.compon
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { PrikazPrometnogDokumentaComponent } from './components/prikaz-prometnog-dokumenta/prikaz-prometnog-dokumenta.component';
 import { ListaPrometnihDokumenataComponent } from './components/lista-prometnih-dokumenata/lista-prometnih-dokumenata.component';
+import { RobneKarticeListaComponent } from './components/robne-kartice-lista/robne-kartice-lista.component';
+import { RobnaKarticaComponent } from './components/robna-kartica/robna-kartica.component';
 
 @NgModule({
   declarations: [
@@ -51,7 +53,9 @@ import { ListaPrometnihDokumenataComponent } from './components/lista-prometnih-
     DialogYesNoComponent,
     RobaInsertComponent,
     PrikazPrometnogDokumentaComponent,
-    ListaPrometnihDokumenataComponent
+    ListaPrometnihDokumenataComponent,
+    RobneKarticeListaComponent,
+    RobnaKarticaComponent
 
   ],
   entryComponents: [DialogYesNoComponent],

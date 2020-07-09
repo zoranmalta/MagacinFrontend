@@ -1,0 +1,123 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-6" >
+            <mat-card class="example-card">
+                <mat-card-header>
+                  <div mat-card-avatar class="example-header-image"></div>
+                <mat-card-title>Preduzece : GigaMarket</mat-card-title>
+                  <mat-card-subtitle></mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  <p>
+                    Description : {{robnaKartica.magacin.preduzece.adresa}}
+                  </p>
+                </mat-card-content>
+                <mat-card-actions>
+                  
+                    <button type="button" mat-raised-button (click)="onReport()">Report</button>
+                  
+                  <button mat-raised-button (click)="onBack()"  >Nazad</button>
+                </mat-card-actions>
+              </mat-card>
+        </div>
+        <div class="col-6" >
+           <div >
+            <mat-list  >
+              <mat-list-item  >Magacin : {{ robnaKartica.magacin.naziv }} </mat-list-item>
+              <mat-list-item  >Poslovna godina : {{robnaKartica.poslovnaGodina.godinaEnd | date:'yyyy'}} </mat-list-item>
+              <mat-list-item  >Naziv Robe :  {{robnaKartica.roba.naziv}}</mat-list-item>
+              
+            </mat-list>
+           </div>
+        </div>
+  </div>
+
+  <div class="mat-elevation-z8">
+          
+    <table mat-table [dataSource]="dataSource" >
+           <!-- Datum Column -->
+      <ng-container matColumnDef="datum">
+        <mat-header-cell *matHeaderCellDef > Datum </mat-header-cell>
+        <mat-cell *matCellDef="let analitika" >{{analitika.datumFormiranja | date:"dd:MM:yyyy"}} </mat-cell>
+      </ng-container>
+
+         <!-- Tip Column -->
+      <ng-container matColumnDef="tip">
+        <mat-header-cell *matHeaderCellDef > Tip </mat-header-cell>
+        <mat-cell *matCellDef="let analitika" >
+            <span *ngIf="analitika.stavkaDokumenta">{{analitika.tipPrometa}}</span>
+        </mat-cell>
+      </ng-container>
+  
+      <!-- dokument Column -->
+      <ng-container matColumnDef="dokument">
+        <mat-header-cell *matHeaderCellDef > Dokument </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika">
+            <span *ngIf="analitika.stavkaDokumenta">{{analitika.stavkaDokumenta.prometniDokument.redniBroj}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- smer Column -->
+      <ng-container matColumnDef="smer">
+        <mat-header-cell *matHeaderCellDef > Smer </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika"> {{analitika.smer}} </mat-cell>
+      </ng-container>
+
+      <!-- Ulaz Column -->
+      <ng-container matColumnDef="ulaz">
+        <mat-header-cell *matHeaderCellDef > Ulaz </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika">
+            <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='OTPREMLJENO'">{{-analitika.kolicina}}</span>
+            <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='DOBAVLJENO'">{{analitika.kolicina}}</span>
+        </mat-cell>
+      </ng-container>
+
+       <!-- Izlaz Column -->
+       <ng-container matColumnDef="izlaz">
+        <mat-header-cell *matHeaderCellDef > Izlaz </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika">
+            <span *ngIf="analitika.smer=='IZLAZ'">{{analitika.kolicina}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Saldo Column -->
+      <ng-container matColumnDef="saldo">
+        <mat-header-cell *matHeaderCellDef > Saldo </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika"> {{getSaldo(analitika)}} </mat-cell>
+      </ng-container>
+
+       <!-- cena Column -->
+       <ng-container matColumnDef="cena">
+        <mat-header-cell *matHeaderCellDef > Cena </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika"> {{analitika.cena}} </mat-cell>
+      </ng-container>
+
+       <!-- Vrednost ulaza Column -->
+       <ng-container matColumnDef="vrednostUlaza">
+        <mat-header-cell *matHeaderCellDef > Vr. ulaza </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika">
+            <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='OTPREMLJENO'">{{-analitika.vrednost}}</span>
+            <span *ngIf="analitika.smer=='ULAZ'&& analitika.tipPrometa=='DOBAVLJENO'">{{analitika.vrednost}}</span>
+        </mat-cell>
+      </ng-container>
+
+       <!-- Vrednost izlaza Column -->
+       <ng-container matColumnDef="vrednostIzlaza">
+        <mat-header-cell *matHeaderCellDef > Vr. izlaza </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika">
+            <span *ngIf="analitika.smer=='IZLAZ'">{{analitika.vrednost}}</span>
+        </mat-cell>
+      </ng-container>
+
+      <!-- Ukupna vrednost Column -->
+      <ng-container matColumnDef="ukupnaVrednost">
+        <mat-header-cell *matHeaderCellDef > Uk. vrednost </mat-header-cell>
+        <mat-cell  *matCellDef="let analitika"> {{getUkupnaVrednost(analitika)}} </mat-cell>
+      </ng-container>
+       
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"  ></mat-row>
+    </table>
+  </div>
+
+</div> 
